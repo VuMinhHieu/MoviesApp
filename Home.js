@@ -24,7 +24,7 @@ export default class Home extends React.Component {
 	componentDidMount() {
 		setTimeout( ()=>{
 			this.getPopularMovies(this.state.paged);
-		}, 2000);
+		}, 0);
 	}
 
 	async getPopularMovies(page = 1) {
