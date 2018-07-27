@@ -137,7 +137,7 @@ export default class Home extends React.Component {
 							</View>
 							{/*End filter*/}
 
-							<ListMovies movies={this.state.popularMovies}/>
+							<ListMovies movies={this.state.popularMovies} navigation={this.props.navigation}/>
 
 							{/*Start pagination*/}
 							<View style={{flexWrap: 'wrap', flexDirection:'row', flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20, marginBottom: 20,}}>

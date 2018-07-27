@@ -9,7 +9,6 @@ import {Container} from 'native-base';
 const RootStack = createStackNavigator(
 	{
 		Home: { screen: Home, navigationOptions: { header: null } },
-		ListMovies: { screen: ListMovies, navigationOptions: { header: null } },
 		MovieItem: MovieItem
 	},
 	{
