@@ -41,7 +41,7 @@ GIF created with [LiceCap](https://github.com/VuMinhHieu/MoviesApp/blob/master/w
 ## Notes
 
 Describe any challenges encountered while building the app.
-1. In home component setState for 'movies_type' run after getListMovies function run - line 103
+1. In home component, setState for 'movies_type' run after getListMovies function run - line 103
 2. At page 3, now_playing tab. I sees that we have 2 film with same `release_date` so change sort from `popular -> release_date` get different result with change from `rating -> release_date`
 ## License
 
