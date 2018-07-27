@@ -1,9 +1,9 @@
 import React from 'react';
-import { Form, Picker, Spinner, Input, Item, Text, Container, Header, Content, Button, Icon } from 'native-base';
+import { Footer, FooterTab, Form, Picker, Spinner, Input, Item, Text, Container, Header, Content, Button, Icon } from 'native-base';
 import {Dimensions, RefreshControl, View} from 'react-native';
 import ListMovies from './listMovies';
 
-// import popularMoviesData from './popularMovies1';
+// import listMoviesData from './popularMovies1';
 
 const dimensions = Dimensions.get('window');
 const wHeight = dimensions.height;
@@ -13,73 +13,75 @@ export default class Home extends React.Component {
 		this.state = {
 			isLoading: true,
 			searchText : "",
-			popularMovies: [],
+			listMovies: [],
 			moviesfetch: [],
 			paged: 1,
 			total_pages: 0,
 			refreshing: false,
 			filter_by: "popularity",
+			now_playing : true,
+			movies_type : 'now_playing',
 		};
 	}
+
 	componentDidMount() {
 		setTimeout( ()=>{
-			this.getPopularMovies(this.state.paged);
+			this.getListMovies(this.state.paged);
 		}, 0);
 	}
 
-	async getPopularMovies(page = 1) {
-		let url = "https://api.themoviedb.org/3/movie/popular?page="+page+"&api_key=e9005481562bed9b8b04d9596191beed";
+	async getListMovies(page = 1, type = 'now_playing') {
+		console.log(this.state.movies_type);
+		let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
 		let moviesfetch = await fetch(url).then((response) => response.json());
 
-		// let moviesfetch = popularMoviesData;
+		// let moviesfetch = listMoviesData;
 
 		this.setState({
 			moviesfetch,
-			popularMovies: moviesfetch.results,
+			listMovies: moviesfetch.results,
 			total_pages:moviesfetch.total_pages,
 			isLoading: false,
 			refreshing: false,
 			paged: page,
 		});
 
-		if (this.state.filter_by != 'popularity'){
-			this._onFilterChange();
-		}
+		this._onFilterChange();
 	}
 
 	_onPullRefresh() {
 		this.setState({
 			refreshing: true
 		});
-		this.getPopularMovies(1);
+		this.getListMovies();
 	}
 
 	_onSearch(searchText){
 		let tempMovies = this.state.moviesfetch.results;
-		let popularMovies = tempMovies.filter(movie => movie.title.toLowerCase().includes(searchText.toLowerCase()));
+		let listMovies = tempMovies.filter(movie => movie.title.toLowerCase().includes(searchText.toLowerCase()));
 		this.setState({
 			searchText,
-			popularMovies
+			listMovies
 		});
 	}
 
 	_onFilterChange (selectedValue = '') {
 		if ( selectedValue != this.state.filter_by ) {
 			if ( selectedValue == '' ) {selectedValue = this.state.filter_by;}
-			let popularMovies = this.state.popularMovies;
+			let listMovies = this.state.moviesfetch.results;
 			if (selectedValue == "vote_average" ) {
-				popularMovies = popularMovies.sort((a, b) => b.vote_average - a.vote_average );
+				listMovies = listMovies.sort((a, b) => b.vote_average - a.vote_average );
 			}
 			else if ( selectedValue == "popularity" ) {
-				popularMovies = popularMovies.sort((a, b) => b.popularity - a.popularity );
+				listMovies = listMovies.sort((a, b) => b.popularity - a.popularity );
 			}
 			else if (selectedValue == "release_date") {
-				popularMovies = popularMovies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date) );
+				listMovies = listMovies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date) );
 			}
 
 			this.setState({
 				filter_by: selectedValue,
-				popularMovies
+				listMovies
 			});
 		}
 	}
@@ -88,17 +90,24 @@ export default class Home extends React.Component {
 		this.setState({
 			isLoading: true,
 		});
-		this.getPopularMovies(paged);
+		this.getListMovies(paged);
 	}
 
-	_onClickItem(movie){
-		this.props.navigation.navigate('MovieItem',{...movie});
+	_onFooterTab(type){
+		if ( type !== this.state.movies_type ){
+			this.setState({
+				movies_type : type,
+				isLoading: true,
+				now_playing : !this.state.now_playing
+			});
+			this.getListMovies(1, type);
+		}
 	}
 
 	render() {
 		return (
 			<Container>
-				<Header searchBar rounded>
+				<Header hasSegment searchBar rounded>
 					<Item>
 						<Icon name="ios-search" />
 						<Input placeholder="Search" onChangeText={text=> this._onSearch(text)} />
@@ -137,7 +146,7 @@ export default class Home extends React.Component {
 							</View>
 							{/*End filter*/}
 
-							<ListMovies movies={this.state.popularMovies} navigation={this.props.navigation}/>
+							<ListMovies movies={this.state.listMovies} navigation={this.props.navigation}/>
 
 							{/*Start pagination*/}
 							<View style={{flexWrap: 'wrap', flexDirection:'row', flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20, marginBottom: 20,}}>
@@ -177,6 +186,16 @@ export default class Home extends React.Component {
 						</View>
 					}
 				</Content>
+				<Footer>
+					<FooterTab>
+						<Button active={this.state.now_playing} onPress={()=>this._onFooterTab('now_playing')}>
+							<Text> Now Playing </Text>
+						</Button>
+						<Button active={!this.state.now_playing} onPress={()=>this._onFooterTab('top_rated')}>
+							<Text> Top Rated </Text>
+						</Button>
+					</FooterTab>
+				</Footer>
 			</Container>
 		);
 	}
