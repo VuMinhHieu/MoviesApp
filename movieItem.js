@@ -3,7 +3,6 @@ import {Container, Text, H3} from 'native-base';
 import {Image, Dimensions} from 'react-native';
 
 const dimensions = Dimensions.get('window');
-const wHeight = Dimensions.height;
 const wWidth = dimensions.width;
 
 export default class MovieItem extends React.Component {

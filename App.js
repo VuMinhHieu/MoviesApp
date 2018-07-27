@@ -2,15 +2,18 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import ListMovies from './listMovies';
 import MovieItem from './movieItem';
+import Home from './Home';
+
 import {Container} from 'native-base';
 
 const RootStack = createStackNavigator(
 	{
+		Home: { screen: Home, navigationOptions: { header: null } },
 		ListMovies: { screen: ListMovies, navigationOptions: { header: null } },
 		MovieItem: MovieItem
 	},
 	{
-		initialRouteName: 'ListMovies',
+		initialRouteName: 'Home',
 	}
 );
 
