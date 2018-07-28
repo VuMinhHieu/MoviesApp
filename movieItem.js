@@ -1,11 +1,7 @@
 import React from 'react';
-import {Container,Content, Text} from 'native-base';
-import {Image, Dimensions, View, StyleSheet} from 'react-native';
+import {Container, Text} from 'native-base';
+import {Image, View, StyleSheet} from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-
-const dimensions = Dimensions.get('window');
-const wWidth = dimensions.width;
-const wHeight = dimensions.height;
 
 export default class MovieItem extends React.Component {
 	static navigationOptions = ({navigation}) => {

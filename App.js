@@ -1,15 +1,22 @@
 import React from 'react';
 import {NetInfo} from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator , createDrawerNavigator,DrawerItems} from 'react-navigation';
 import MovieItem from './movieItem';
 import Home from './Home';
+import SideBar from './sidebar';
 
 import {Container, Text} from 'native-base';
 
+const DrawerStack = createDrawerNavigator({
+	Home: { screen: Home },
+}, {
+	contentComponent: props => <SideBar><DrawerItems {...props} /></SideBar>
+});
+
 const RootStack = createStackNavigator(
 	{
-		Home: { screen: Home, navigationOptions: { header: null } },
-		MovieItem: MovieItem
+		Home: { screen: DrawerStack, navigationOptions: { header: null }  },
+		MovieItem: MovieItem,
 	},
 	{
 		initialRouteName: 'Home',

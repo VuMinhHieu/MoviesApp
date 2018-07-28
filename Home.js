@@ -5,6 +5,7 @@ import ListMovies from './listMovies';
 
 const dimensions = Dimensions.get('window');
 const wHeight = dimensions.height;
+
 export default class Home extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,7 +25,7 @@ export default class Home extends React.Component {
 		};
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		setTimeout( ()=>{
 			this.getListMovies(this.state.paged);
 		}, 0);
@@ -107,7 +108,7 @@ export default class Home extends React.Component {
 			<Container>
 				<Header rounded>
 					<Left style={{flex:1}}>
-						<Button transparent>
+						<Button transparent onPress={()=>this.props.navigation.openDrawer()}>
 							<Icon name='menu' />
 						</Button>
 					</Left>
