@@ -49,6 +49,7 @@ export default class App extends React.Component {
 		);
 		await Expo.Font.loadAsync({
 			'Ionicons': require('native-base/Fonts/Ionicons.ttf'),
+			'MaterialCommunityIcons': require('native-base/Fonts/MaterialCommunityIcons.ttf'),
 		});
 		this.setState({
 			font_loading: false,

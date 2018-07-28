@@ -1,9 +1,7 @@
 import React from 'react';
-import { Footer, FooterTab, Form, Picker, Spinner, Input, Item, Text, Container, Header, Content, Button, Icon } from 'native-base';
+import { Left, Right, Body, Title, Footer, FooterTab, Form, Picker, Spinner, Input, Item, Text, Container, Header, Content, Button, Icon } from 'native-base';
 import {Dimensions, RefreshControl, View} from 'react-native';
 import ListMovies from './listMovies';
-
-// import listMoviesData from './popularMovies1';
 
 const dimensions = Dimensions.get('window');
 const wHeight = dimensions.height;
@@ -21,6 +19,8 @@ export default class Home extends React.Component {
 			filter_by: "popularity",
 			now_playing : true,
 			movies_type : 'now_playing',
+			filter_open: false,
+			search_open: false,
 		};
 	}
 
@@ -32,10 +32,8 @@ export default class Home extends React.Component {
 
 	async getListMovies(page = 1, type = 'now_playing') {
 		console.log(this.state.movies_type);
-		let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
+			let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
 		let moviesfetch = await fetch(url).then((response) => response.json());
-
-		// let moviesfetch = listMoviesData;
 
 		this.setState({
 			moviesfetch,
@@ -107,11 +105,46 @@ export default class Home extends React.Component {
 	render() {
 		return (
 			<Container>
-				<Header hasSegment searchBar rounded>
-					<Item>
-						<Icon name="ios-search" />
-						<Input placeholder="Search" onChangeText={text=> this._onSearch(text)} />
-					</Item>
+				<Header rounded>
+					<Left style={{flex:1}}>
+						<Button transparent>
+							<Icon name='menu' />
+						</Button>
+					</Left>
+					<Body style={{flex:4}}>
+					{this.state.filter_open ?
+						<Form>
+							<Picker
+								mode="dropdown"
+								iosIcon={<Icon name="ios-arrow-down-outline"/>}
+								placeholder="Select filter"
+								placeholderStyle={{color: "#bfc6ea"}}
+								placeholderIconColor="#007aff"
+								selectedValue={this.state.filter_by}
+								onValueChange={(selectedValue) => this._onFilterChange(selectedValue)}
+							>
+								<Picker.Item label="Popularity" value="popularity"/>
+								<Picker.Item label="Rating" value="vote_average"/>
+								<Picker.Item label="Release Date" value="release_date"/>
+							</Picker>
+						</Form>
+						: this.state.search_open ?
+						<Item>
+							<Input placeholder="Search" onChangeText={text=> this._onSearch(text)} />
+						</Item>
+						:
+						<Title>Home</Title>
+					}
+					</Body>
+					<Right style={{flex:2}}>
+						<Button transparent onPress={()=>this.setState({search_open : !this.state.search_open, filter_open: false}) }>
+							<Icon name='ios-search' />
+						</Button>
+						<Button transparent onPress={()=>this.setState({filter_open : !this.state.filter_open, search_open: false}) }>
+							<Icon type="MaterialCommunityIcons" name='filter' />
+						</Button>
+					</Right>
+
 				</Header>
 				<Content
 					refreshControl={
@@ -124,27 +157,6 @@ export default class Home extends React.Component {
 
 					{this.state.isLoading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height:wHeight-200 }} ><Spinner /></View> :
 						<View>
-							{/*Start filter*/}
-							<View style={{flexDirection:'row', flex: 1, alignItems: 'center', justifyContent: 'center',}}>
-								<Text>Select Filter:</Text>
-								<Form>
-									<Picker
-										mode="dropdown"
-										iosIcon={<Icon name="ios-arrow-down-outline" />}
-										placeholder="Select filter"
-										placeholderStyle={{ color: "#bfc6ea" }}
-										placeholderIconColor="#007aff"
-										style={{ width: undefined }}
-										selectedValue={this.state.filter_by}
-										onValueChange={(selectedValue)=>this._onFilterChange(selectedValue)}
-									>
-										<Picker.Item label="Popularity" value="popularity" />
-										<Picker.Item label="Rating" value="vote_average" />
-										<Picker.Item label="Release Date" value="release_date" />
-									</Picker>
-								</Form>
-							</View>
-							{/*End filter*/}
 
 							<ListMovies movies={this.state.listMovies} navigation={this.props.navigation}/>
 
@@ -189,9 +201,11 @@ export default class Home extends React.Component {
 				<Footer>
 					<FooterTab>
 						<Button active={this.state.now_playing} onPress={()=>this._onFooterTab('now_playing')}>
+							<Icon type='MaterialCommunityIcons' name='play-circle'/>
 							<Text> Now Playing </Text>
 						</Button>
 						<Button active={!this.state.now_playing} onPress={()=>this._onFooterTab('top_rated')}>
+							<Icon type='MaterialCommunityIcons' name='star-circle'/>
 							<Text> Top Rated </Text>
 						</Button>
 					</FooterTab>
