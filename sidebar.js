@@ -17,7 +17,7 @@ export default class SideBar extends React.Component {
 				<View style={{alignItems: 'center', position:'absolute', top:60, right: 90,flexDirection:'row', flexWrap:'wrap'}}>
 						<Thumbnail source={require('./logo.jpg')}/>
 						<View style={{ paddingLeft: 10}}>
-							<Text style={{ fontSize: 25 }}>Fliexie</Text>
+							<Text style={{ fontSize: 25 }}>Flixie</Text>
 							<Text note style={{color:'#252525', fontSize:13}}>Movies List</Text>
 						</View>
 				</View>
