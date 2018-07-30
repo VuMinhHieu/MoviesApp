@@ -1,7 +1,10 @@
 import React from 'react';
-import { Left, Right, Body, Title, Footer, FooterTab, Form, Picker, Spinner, Input, Item, Text, Container, Header, Content, Button, Icon } from 'native-base';
+import { Footer, FooterTab, Spinner, Text, Container, Content, Button, Icon } from 'native-base';
 import {Dimensions, RefreshControl, View} from 'react-native';
 import ListMovies from './listMovies';
+import AppHeader from './header';
+import Pagination from './pagination';
+import AppFooter from './footer';
 
 const dimensions = Dimensions.get('window');
 const wHeight = dimensions.height;
@@ -103,50 +106,25 @@ export default class Home extends React.Component {
 		}
 	}
 
+	_onHeaderIconClick = (type) => {
+		if ( type === 'search')
+			this.setState({search_open : !this.state.search_open, filter_open: false});
+		else this.setState({filter_open : !this.state.filter_open, search_open: false})
+	};
+
 	render() {
 		return (
 			<Container>
-				<Header rounded>
-					<Left style={{flex:1}}>
-						<Button transparent onPress={()=>this.props.navigation.openDrawer()}>
-							<Icon name='menu' />
-						</Button>
-					</Left>
-					<Body style={{flex:4}}>
-					{this.state.filter_open ?
-						<Form>
-							<Picker
-								mode="dropdown"
-								iosIcon={<Icon name="ios-arrow-down-outline"/>}
-								placeholder="Select filter"
-								placeholderStyle={{color: "#bfc6ea"}}
-								placeholderIconColor="#007aff"
-								selectedValue={this.state.filter_by}
-								onValueChange={(selectedValue) => this._onFilterChange(selectedValue)}
-							>
-								<Picker.Item label="Popularity" value="popularity"/>
-								<Picker.Item label="Rating" value="vote_average"/>
-								<Picker.Item label="Release Date" value="release_date"/>
-							</Picker>
-						</Form>
-						: this.state.search_open ?
-						<Item>
-							<Input placeholder="Search" onChangeText={text=> this._onSearch(text)} />
-						</Item>
-						:
-						<Title>Home</Title>
-					}
-					</Body>
-					<Right style={{flex:2}}>
-						<Button transparent onPress={()=>this.setState({search_open : !this.state.search_open, filter_open: false}) }>
-							<Icon name='ios-search' />
-						</Button>
-						<Button transparent onPress={()=>this.setState({filter_open : !this.state.filter_open, search_open: false}) }>
-							<Icon type="MaterialCommunityIcons" name='filter' />
-						</Button>
-					</Right>
+				<AppHeader
+					navigation={this.props.navigation}
+					filter_open={this.state.filter_open}
+					search_open={this.state.search_open}
+					filter_by={this.state.filter_by}
+					_onHeaderIconClick={(type)=>this._onHeaderIconClick(type)}
+					_onFilterChange={(selectedValue)=>this._onFilterChange(selectedValue)}
+					_onSearch={(text)=>this._onSearch(text)}
+				/>
 
-				</Header>
 				<Content
 					refreshControl={
 						<RefreshControl
@@ -158,59 +136,22 @@ export default class Home extends React.Component {
 
 					{this.state.isLoading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height:wHeight-200 }} ><Spinner /></View> :
 						<View>
-
 							<ListMovies movies={this.state.listMovies} navigation={this.props.navigation}/>
 
-							{/*Start pagination*/}
-							<View style={{flexWrap: 'wrap', flexDirection:'row', flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20, marginBottom: 20,}}>
-								{this.state.paged > 1 ?
-									<Button onPress={()=>this._onPaging(this.state.paged-1)} info style={{marginRight:5}}>
-										<Icon name='arrow-back' />
-									</Button>
-									: ""
-								}
-								{this.state.paged > 2 ?
-									<Button onPress={()=>this._onPaging(this.state.paged-2)} info style={{marginRight:5}}><Text>{this.state.paged-2}</Text></Button>
-									: ""
-								}
-								{this.state.paged > 1 ?
-									<Button onPress={()=>this._onPaging(this.state.paged-1)} info style={{marginRight:5}}><Text>{this.state.paged-1}</Text></Button>
-									: ""
-								}
-
-								<Button info bordered style={{marginRight:5}}><Text>{this.state.paged}</Text></Button>
-
-								{this.state.paged < this.state.total_pages ?
-									<Button onPress={()=>this._onPaging(this.state.paged+1)} info style={{marginRight:5}}><Text>{this.state.paged+1}</Text></Button>
-									: ""
-								}
-								{this.state.paged < this.state.total_pages-1 ?
-									<Button onPress={()=>this._onPaging(this.state.paged+2)} info style={{marginRight:5}}><Text>{this.state.paged+2}</Text></Button>
-									: ""
-								}
-								{this.state.paged < this.state.total_pages ?
-									<Button onPress={()=>this._onPaging(this.state.paged+1)} info>
-										<Icon name='arrow-forward' />
-									</Button>
-									: ""
-								}
-							</View>
-							{/*End pagination*/}
+							<Pagination
+								paged={this.state.paged}
+								total_pages={this.state.total_pages}
+								_onPaging={(paged)=>this._onPaging(paged)}
+							/>
 						</View>
 					}
+
 				</Content>
-				<Footer>
-					<FooterTab>
-						<Button active={this.state.now_playing} onPress={()=>this._onFooterTab('now_playing')}>
-							<Icon type='MaterialCommunityIcons' name='play-circle'/>
-							<Text> Now Playing </Text>
-						</Button>
-						<Button active={!this.state.now_playing} onPress={()=>this._onFooterTab('top_rated')}>
-							<Icon type='MaterialCommunityIcons' name='star-circle'/>
-							<Text> Top Rated </Text>
-						</Button>
-					</FooterTab>
-				</Footer>
+
+				<AppFooter
+					now_playing={this.state.now_playing}
+					_onFooterTab={(type)=>this._onFooterTab(type)}
+				/>
 			</Container>
 		);
 	}
