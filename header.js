@@ -5,22 +5,36 @@ export default class AppHeader extends React.Component {
 	constructor(props){
 	    super(props);
 	    this.state = {
-	        flexLeft: 1,
-	        flexBody: 1,
-	        flexRight: 1,
+        flexLeft: 1,
+        flexBody: 1,
+        flexRight: 1,
+		    filter_open: false,
+		    search_open: false,
 	    }
 	}
 
-	_onHeaderIconClick(type){
-		if (!this.props.filter_open && !this.props.search_open){
-			this.setState({
-				flexLeft: 1,
-				flexBody: 4,
-				flexRight: 2,
-			});
+	_onHeaderIconClick = (type) => {
+		if ( type === 'search') {
+			this.setState({search_open: !this.state.search_open, filter_open: false},this._reStyleHeader );
 		}
-		this.props._onHeaderIconClick(type);
-	}
+		else this.setState({filter_open : !this.state.filter_open, search_open: false});
+	};
+
+	_reStyleHeader(){
+			if (this.state.filter_open || this.state.search_open){
+				this.setState({
+					flexLeft: 1,
+					flexBody: 4,
+					flexRight: 2,
+				});
+			} else {
+				this.setState({
+					flexLeft: 1,
+					flexBody: 1,
+					flexRight: 1,
+				});
+			}
+	};
 
 	render() {
 		return (
@@ -31,7 +45,7 @@ export default class AppHeader extends React.Component {
 						</Button>
 					</Left>
 					<Body style={{flex:this.state.flexBody}}>
-					{this.props.filter_open ?
+					{this.state.filter_open ?
 						<Form>
 							<Picker
 								mode="dropdown"
@@ -47,7 +61,7 @@ export default class AppHeader extends React.Component {
 								<Picker.Item label="Release Date" value="release_date"/>
 							</Picker>
 						</Form>
-						: this.props.search_open ?
+						: this.state.search_open ?
 							<Item>
 								<Input placeholder="Search" onChangeText={text=> this.props._onSearch(text)} />
 							</Item>

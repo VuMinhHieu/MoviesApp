@@ -1,6 +1,6 @@
 import React from 'react';
-import { Thumbnail, List, ListItem, Text, Left, Body } from 'native-base';
-
+import { Thumbnail, ListItem, Left, Body } from 'native-base';
+import { FlatList, Text } from 'react-native';
 
 export default class ListMovies extends React.Component {
   _onClickItem(movie){
@@ -9,19 +9,21 @@ export default class ListMovies extends React.Component {
 
   render() {
     return (
-      <List>
-        {this.props.movies && this.props.movies.map(movie =>
-            <ListItem key={movie.id} thumbnail onPress={()=>this._onClickItem(movie)}>
-              <Left>
-                <Thumbnail square large source={{uri: `https://image.tmdb.org/t/p/w342${movie.poster_path}`}} />
-              </Left>
-              <Body>
-                <Text>{movie.title}</Text>
-                <Text note numberOfLines={4}>{movie.overview}</Text>
-              </Body>
-            </ListItem>
-        )}
-      </List>
+	    <FlatList
+		    data={this.props.movies}
+		    keyExtractor={(item, index) => item.id.toString()}
+		    renderItem={({item}) =>
+			    <ListItem thumbnail onPress={()=>this._onClickItem(item)}>
+				    <Left>
+					    <Thumbnail square large source={{uri: `https://image.tmdb.org/t/p/w342${item.poster_path}`}} />
+				    </Left>
+				    <Body>
+				    <Text>{item.title}</Text>
+				    <Text note numberOfLines={4}>{item.overview}</Text>
+				    </Body>
+			    </ListItem>
+		    }
+	    />
     );
   }
 }

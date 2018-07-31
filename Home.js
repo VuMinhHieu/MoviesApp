@@ -1,6 +1,6 @@
 import React from 'react';
-import { Footer, FooterTab, Spinner, Text, Container, Content, Button, Icon } from 'native-base';
-import {Dimensions, RefreshControl, View} from 'react-native';
+import {Spinner, Container, Content, View } from 'native-base';
+import {Dimensions, RefreshControl} from 'react-native';
 import ListMovies from './listMovies';
 import AppHeader from './header';
 import Pagination from './pagination';
@@ -21,10 +21,6 @@ export default class Home extends React.Component {
 			total_pages: 0,
 			refreshing: false,
 			filter_by: "popularity",
-			now_playing : true,
-			movies_type : 'now_playing',
-			filter_open: false,
-			search_open: false,
 		};
 	}
 
@@ -35,8 +31,7 @@ export default class Home extends React.Component {
 	}
 
 	async getListMovies(page = 1, type = 'now_playing') {
-		console.log(this.state.movies_type);
-			let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
+		let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
 		let moviesfetch = await fetch(url).then((response) => response.json());
 
 		this.setState({
@@ -96,31 +91,18 @@ export default class Home extends React.Component {
 	}
 
 	_onFooterTab(type){
-		if ( type !== this.state.movies_type ){
-			this.setState({
-				movies_type : type,
-				isLoading: true,
-				now_playing : !this.state.now_playing
-			});
-			this.getListMovies(1, type);
-		}
+		this.setState({
+			isLoading: true,
+		});
+		this.getListMovies(1, type);
 	}
-
-	_onHeaderIconClick = (type) => {
-		if ( type === 'search')
-			this.setState({search_open : !this.state.search_open, filter_open: false});
-		else this.setState({filter_open : !this.state.filter_open, search_open: false})
-	};
 
 	render() {
 		return (
 			<Container>
 				<AppHeader
 					navigation={this.props.navigation}
-					filter_open={this.state.filter_open}
-					search_open={this.state.search_open}
 					filter_by={this.state.filter_by}
-					_onHeaderIconClick={(type)=>this._onHeaderIconClick(type)}
 					_onFilterChange={(selectedValue)=>this._onFilterChange(selectedValue)}
 					_onSearch={(text)=>this._onSearch(text)}
 				/>
@@ -149,7 +131,6 @@ export default class Home extends React.Component {
 				</Content>
 
 				<AppFooter
-					now_playing={this.state.now_playing}
 					_onFooterTab={(type)=>this._onFooterTab(type)}
 				/>
 			</Container>
