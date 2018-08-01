@@ -13,9 +13,9 @@ export default class SideBar extends React.Component {
 		return (
 			<Content>
 				<Image style={{height:180, width:280, resizeMode:'cover'}}
-				       source={require('./sidebar_image.jpg')} />
+				       source={require('../images/sidebar_image.jpg')} />
 				<View style={{alignItems: 'center', position:'absolute', top:60, right: 90,flexDirection:'row', flexWrap:'wrap'}}>
-						<Thumbnail source={require('./logo.jpg')}/>
+						<Thumbnail source={require('../images/logo.jpg')}/>
 						<View style={{ paddingLeft: 10}}>
 							<Text style={{ fontSize: 25 }}>Flixie</Text>
 							<Text note style={{color:'#252525', fontSize:13}}>Movies List</Text>

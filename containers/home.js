@@ -2,9 +2,11 @@ import React from 'react';
 import {Spinner, Container, Content, View } from 'native-base';
 import {Dimensions, RefreshControl} from 'react-native';
 import ListMovies from './listMovies';
-import AppHeader from './header';
-import Pagination from './pagination';
-import AppFooter from './footer';
+import AppHeader from '../components/header';
+import Pagination from '../components/pagination';
+import AppFooter from '../components/footer';
+
+import styles from  '../components/style';
 
 const dimensions = Dimensions.get('window');
 const wHeight = dimensions.height;
@@ -116,7 +118,7 @@ export default class Home extends React.Component {
 					}
 				>
 
-					{this.state.isLoading ? <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height:wHeight-200 }} ><Spinner /></View> :
+					{this.state.isLoading ? <View style={styles.loading}><Spinner/></View> :
 						<View>
 							<ListMovies movies={this.state.listMovies} navigation={this.props.navigation}/>
 

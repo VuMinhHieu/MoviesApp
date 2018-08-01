@@ -1,7 +1,7 @@
 import React from 'react';
-import {Container, Text} from 'native-base';
-import {Image, View, StyleSheet} from 'react-native';
+import {Image, View, Text} from 'react-native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import styles from  '../components/style';
 
 export default class MovieItem extends React.Component {
 	static navigationOptions = ({navigation}) => {
@@ -12,7 +12,7 @@ export default class MovieItem extends React.Component {
 
 	render() {
 		const params = this.props.navigation.state.params;
-		let stars = []
+		let stars = [];
 		let starInterger = Math.floor(params.vote_average / 2);
 		let starFloat = params.vote_average / 2;
 		for (let i = 0; i < 5; i++) {
@@ -25,35 +25,18 @@ export default class MovieItem extends React.Component {
 			}
 		}
 		return (
-			<Container>
+			<View style={styles.container}>
 					<Image
 						style={styles.backgroundImage}
 						source={{uri: `https://image.tmdb.org/t/p/w342${params.poster_path}`}}
 					/>
-					<View style={styles.movie_detail}>
-						<Text style={{color: '#fff', marginTop: 10, fontWeight: '500', fontSize: 20}}>{params.title}</Text>
+					<View style={styles.movieDetailWapper}>
+						<Text style={[styles.movieDetailTitle, styles.movieDetailText]}>{params.title}</Text>
 						<Text>{stars}</Text>
-						<Text style={{color: '#fff',marginTop: 5 }}><Icon name='calendar' style={{fontSize:25}}/> <Text style={{color: '#fff',fontWeight:'500'}}>{params.release_date}</Text></Text>
-						<Text style={{color: '#fff',marginTop: 10 }}>{params.overview}</Text>
+						<Text style={[styles.movieDetailDate, styles.movieDetailText]}><Icon name='calendar' style={{fontSize:25}}/> <Text style={[styles.movieDetailText, {fontWeight:'500'}]}>{params.release_date}</Text></Text>
+						<Text style={[styles.movieDetailText, {marginBottom: 5}]}>{params.overview}</Text>
 					</View>
-			</Container>
+			</View>
 		);
 	}
 };
-
-let styles = StyleSheet.create({
-	backgroundImage: {
-		flex: 1,
-		resizeMode: 'cover'
-	},
-	icon_star: {fontSize:20, color:'#fffd16'},
-	movie_detail: {
-		position: 'absolute',
-		padding: 5,
-		bottom: 0,
-		left: 0,
-		right: 0,
-		backgroundColor: '#000',
-		opacity: 0.8
-	},
-});

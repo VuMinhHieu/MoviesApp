@@ -1,9 +1,9 @@
 import React from 'react';
 import {NetInfo} from 'react-native';
 import { createStackNavigator , createDrawerNavigator,DrawerItems} from 'react-navigation';
-import MovieItem from './movieItem';
-import Home from './Home';
-import SideBar from './sidebar';
+import MovieItem from './containers/movieItem';
+import Home from './containers/home';
+import SideBar from './components/sidebar';
 
 import {Container, Text} from 'native-base';
 
@@ -15,7 +15,7 @@ const DrawerStack = createDrawerNavigator({
 
 const RootStack = createStackNavigator(
 	{
-		Home: { screen: DrawerStack, navigationOptions: { header: null }  },
+		Home: { screen: DrawerStack, navigationOptions: { title: 'Fliexe',  header: null }  },
 		MovieItem: MovieItem,
 	},
 	{
