@@ -33,7 +33,10 @@ export default class MovieItem extends React.Component {
 					<View style={styles.movieDetailWapper}>
 						<Text style={[styles.movieDetailTitle, styles.movieDetailText]}>{params.title}</Text>
 						<Text>{stars}</Text>
-						<Text style={[styles.movieDetailDate, styles.movieDetailText]}><Icon name='calendar' style={{fontSize:25}}/> <Text style={[styles.movieDetailText, {fontWeight:'500'}]}>{params.release_date}</Text></Text>
+						<Text style={[styles.movieDetailDate, styles.movieDetailText]}>
+							<Icon name='calendar' style={{fontSize:25}}/>
+							<Text style={[styles.movieDetailText, {fontWeight:'500'}]}>{params.release_date}</Text>
+						</Text>
 						<Text style={[styles.movieDetailText, {marginBottom: 5}]}>{params.overview}</Text>
 					</View>
 			</View>

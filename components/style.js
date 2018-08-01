@@ -32,6 +32,10 @@ export default styles = StyleSheet.create({
 		fontWeight: '500',
 		fontSize: 20
 	},
+	movieListTitle: {
+		fontWeight: '500',
+		fontSize: 18
+	},
 	movieDetailDate:{
 		marginTop: 5
 	}
