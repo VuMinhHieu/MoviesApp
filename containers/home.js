@@ -1,15 +1,12 @@
 import React from 'react';
 import {Spinner, Container, Content, View } from 'native-base';
-import {Dimensions, RefreshControl} from 'react-native';
-import ListMovies from './listMovies';
+import { RefreshControl} from 'react-native';
+import ListMovies from '../components/listMovies';
 import AppHeader from '../components/header';
 import Pagination from '../components/pagination';
 import AppFooter from '../components/footer';
 
 import styles from  '../components/style';
-
-const dimensions = Dimensions.get('window');
-const wHeight = dimensions.height;
 
 export default class Home extends React.Component {
 	constructor(props) {

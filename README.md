@@ -7,7 +7,7 @@ To run this project need follow these steps:
 Or run app on real device via [expo](https://expo.io/@pious/moviesapp)
 # Project 1 - *MoviesApp*
 
-**Name of your app** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
+**MoviesApp** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
 Time spent: **20** hours spent in total
 

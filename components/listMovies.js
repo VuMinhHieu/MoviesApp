@@ -1,7 +1,7 @@
 import React from 'react';
 import { Thumbnail, ListItem, Left, Body } from 'native-base';
 import { FlatList, Text } from 'react-native';
-import styles from  '../components/style';
+import styles from './style';
 
 export default class ListMovies extends React.Component {
   _onClickItem(movie){
