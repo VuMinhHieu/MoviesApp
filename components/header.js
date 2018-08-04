@@ -54,7 +54,7 @@ export default class AppHeader extends React.Component {
 								placeholderStyle={{color: "#bfc6ea"}}
 								placeholderIconColor="#007aff"
 								selectedValue={this.props.filter_by}
-								onValueChange={(selectedValue) => this.props._onFilterChange(selectedValue)}
+								onValueChange={selectedValue => this.props._onFilterChange(selectedValue)}
 							>
 								<Picker.Item label="Popularity" value="popularity"/>
 								<Picker.Item label="Rating" value="vote_average"/>
@@ -63,7 +63,12 @@ export default class AppHeader extends React.Component {
 						</Form>
 						: this.state.search_open ?
 							<Item>
-								<Input placeholder="Search" onChangeText={text=> this.props._onSearch(text)} />
+								<Input
+									autoFocus={true}
+									value={this.props.searchText}
+									placeholder="Search"
+									onChangeText={text=> this.props._onSearch(text)}
+								/>
 							</Item>
 							:
 							<Title>Flixie</Title>

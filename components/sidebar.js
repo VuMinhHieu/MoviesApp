@@ -6,6 +6,7 @@ export default class SideBar extends React.Component {
 	constructor(props){
 	    super(props);
 	    this.state = {
+				air_plane: false,
 
 	    }
 	}
@@ -33,7 +34,7 @@ export default class SideBar extends React.Component {
 							<Text>Airplane Mode</Text>
 							</Body>
 							<Right>
-								<Switch value={false} />
+								<Switch value={this.state.air_plane} onValueChange={()=>this.setState({air_plane: !this.state.air_plane})} />
 							</Right>
 						</ListItem>
 						<ListItem icon>

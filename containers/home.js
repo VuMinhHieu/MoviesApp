@@ -1,12 +1,8 @@
 import React from 'react';
-import {Spinner, Container, Content, View } from 'native-base';
-import { RefreshControl} from 'react-native';
+import { Container } from 'native-base';
 import ListMovies from '../components/listMovies';
 import AppHeader from '../components/header';
-import Pagination from '../components/pagination';
 import AppFooter from '../components/footer';
-
-import styles from  '../components/style';
 
 export default class Home extends React.Component {
 	constructor(props) {
@@ -20,29 +16,33 @@ export default class Home extends React.Component {
 			total_pages: 0,
 			refreshing: false,
 			filter_by: "popularity",
+			movie_type : "now_playing",
+			is_searching: false,
 		};
 	}
 
-	componentWillMount() {
-		setTimeout( ()=>{
-			this.getListMovies(this.state.paged);
-		}, 0);
+	componentDidMount() {
+		this.getListMovies(1);
 	}
 
-	async getListMovies(page = 1, type = 'now_playing') {
+	async getListMovies(page = 1, isLoadMore = false) {
+		let type = this.state.movie_type;
 		let url = `https://api.themoviedb.org/3/movie/${type}?page=${page}&api_key=e9005481562bed9b8b04d9596191beed`;
 		let moviesfetch = await fetch(url).then((response) => response.json());
-
+		let total_pages = moviesfetch.total_pages;
+		moviesfetch = moviesfetch.results;
+		if ( isLoadMore )
+			moviesfetch = [...this.state.moviesfetch, ...moviesfetch];
 		this.setState({
 			moviesfetch,
-			listMovies: moviesfetch.results,
-			total_pages:moviesfetch.total_pages,
-			isLoading: false,
+			listMovies: moviesfetch,
+			total_pages,
 			refreshing: false,
 			paged: page,
+		},()=>{
+			this._onFilterChange();
 		});
 
-		this._onFilterChange();
 	}
 
 	_onPullRefresh() {
@@ -53,7 +53,16 @@ export default class Home extends React.Component {
 	}
 
 	_onSearch(searchText){
-		let tempMovies = this.state.moviesfetch.results;
+		if (searchText !== '' ){
+			this.setState({
+				is_searching: true
+			});
+		} else {
+			this.setState({
+				is_searching: false
+			});
+		}
+		let tempMovies = this.state.moviesfetch;
 		let listMovies = tempMovies.filter(movie => movie.title.toLowerCase().includes(searchText.toLowerCase()));
 		this.setState({
 			searchText,
@@ -63,8 +72,12 @@ export default class Home extends React.Component {
 
 	_onFilterChange (selectedValue = '') {
 		if ( selectedValue != this.state.filter_by ) {
+			this.setState({
+				isLoading: true,
+			});
+
 			if ( selectedValue == '' ) {selectedValue = this.state.filter_by;}
-			let listMovies = this.state.moviesfetch.results;
+			let listMovies = this.state.moviesfetch;
 			if (selectedValue == "vote_average" ) {
 				listMovies = listMovies.sort((a, b) => b.vote_average - a.vote_average );
 			}
@@ -77,23 +90,35 @@ export default class Home extends React.Component {
 
 			this.setState({
 				filter_by: selectedValue,
-				listMovies
+				listMovies,
+				isLoading: false,
 			});
 		}
 	}
 
 	_onPaging(paged){
+		console.log('_onPaging');
 		this.setState({
 			isLoading: true,
 		});
 		this.getListMovies(paged);
 	}
 
+	_onLoadMore(){
+		if ( !this.state.isLoading && !this.state.is_searching) {
+			let newPage = this.state.paged + 1;
+			console.log(newPage);
+			this.getListMovies(newPage, true);
+		}
+	}
+
 	_onFooterTab(type){
 		this.setState({
 			isLoading: true,
+			movie_type : type,
+		},()=> {
+			this.getListMovies(1, false);
 		});
-		this.getListMovies(1, type);
 	}
 
 	render() {
@@ -102,32 +127,19 @@ export default class Home extends React.Component {
 				<AppHeader
 					navigation={this.props.navigation}
 					filter_by={this.state.filter_by}
+					searchText={this.state.searchText}
 					_onFilterChange={(selectedValue)=>this._onFilterChange(selectedValue)}
 					_onSearch={(text)=>this._onSearch(text)}
 				/>
 
-				<Content
-					refreshControl={
-						<RefreshControl
-							refreshing={this.state.refreshing}
-							onRefresh={()=>this._onPullRefresh()}
-						/>
-					}
-				>
-
-					{this.state.isLoading ? <View style={styles.loading}><Spinner/></View> :
-						<View>
-							<ListMovies movies={this.state.listMovies} navigation={this.props.navigation}/>
-
-							<Pagination
-								paged={this.state.paged}
-								total_pages={this.state.total_pages}
-								_onPaging={(paged)=>this._onPaging(paged)}
-							/>
-						</View>
-					}
-
-				</Content>
+				<ListMovies
+					movies={this.state.listMovies}
+					refreshing={this.state.refreshing}
+					navigation={this.props.navigation}
+					is_searching={this.state.is_searching}
+					_onLoadMore={()=>this._onLoadMore()}
+					_onPullRefresh={()=>this._onPullRefresh()}
+				/>
 
 				<AppFooter
 					_onFooterTab={(type)=>this._onFooterTab(type)}
